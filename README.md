@@ -1,101 +1,275 @@
-# ML Challenge 2025 Problem Statement
+# 🛒 Amazon ML Challenge 2025 - Smart Product Pricing
 
-## Smart Product Pricing Challenge
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-In e-commerce, determining the optimal price point for products is crucial for marketplace success and customer satisfaction. Your challenge is to develop an ML solution that analyzes product details and predict the price of the product. The relationship between product attributes and pricing is complex - with factors like brand, specifications, product quantity directly influence pricing. Your task is to build a model that can analyze these product details holistically and suggest an optimal price.
+A machine learning solution for predicting product prices based on catalog content and product images.
 
-### Data Description:
+## 📋 Table of Contents
 
-The dataset consists of the following columns:
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Usage](#usage)
+- [Model Architecture](#model-architecture)
+- [Evaluation](#evaluation)
 
-1. **sample_id:** A unique identifier for the input sample
-2. **catalog_content:** Text field containing title, product description and an Item Pack Quantity(IPQ) concatenated.
-3. **image_link:** Public URL where the product image is available for download. 
-   Example link - https://m.media-amazon.com/images/I/71XfHPR36-L.jpg
-   To download images use `download_images` function from `src/utils.py`. See sample code in `src/test.ipynb`.
-4. **price:** Price of the product (Target variable - only available in training data)
+---
 
-### Dataset Details:
+## 🎯 Overview
 
-- **Training Dataset:** 75k products with complete product details and prices
-- **Test Set:** 75k products for final evaluation
+This project develops an ML solution to predict optimal product prices for e-commerce products based on:
+- **Text Data**: Product titles, descriptions, bullet points
+- **Quantity Information**: Item pack quantity (IPQ), units
+- **Image Data**: Product images (optional enhancement)
 
-### Output Format:
+### Challenge Details
 
-The output file should be a CSV with 2 columns:
+| Metric | Value |
+|--------|-------|
+| Training Samples | 75,000 |
+| Test Samples | 75,000 |
+| Evaluation Metric | SMAPE |
+| Model Constraint | ≤8B parameters, MIT/Apache 2.0 |
 
-1. **sample_id:** The unique identifier of the data sample. Note the ID should match the test record sample_id.
-2. **price:** A float value representing the predicted price of the product.
+---
 
-Note: Make sure to output a prediction for all sample IDs. If you have less/more number of output samples in the output file as compared to test.csv, your output won't be evaluated.
+## 📁 Project Structure
 
-### File Descriptions:
+```
+Amazon-ML-Challenge/
+├── main.py                    # Main entry point
+├── requirements.txt           # Python dependencies
+├── README.md                  # This file
+├── Documentation_template.md  # Submission documentation template
+│
+├── dataset/                   # Data files
+│   ├── train.csv             # Training data (75K samples)
+│   ├── test.csv              # Test data (75K samples)
+│   ├── sample_test.csv       # Sample test file
+│   └── sample_test_out.csv   # Sample output format
+│
+├── src/                       # Source code
+│   ├── __init__.py           # Package initialization
+│   ├── config.py             # Configuration settings
+│   ├── data_preprocessing.py # Text cleaning & preprocessing
+│   ├── feature_extraction.py # TF-IDF & feature engineering
+│   ├── model.py              # ML models (RF, XGB, LightGBM)
+│   ├── train.py              # Training pipeline
+│   ├── predict.py            # Prediction pipeline
+│   └── utils.py              # Image download utilities
+│
+├── notebooks/                 # Jupyter notebooks
+│   └── complete_analysis.ipynb # Full EDA & training notebook
+│
+├── models/                    # Saved models
+│   ├── tfidf_vectorizer.pkl  # TF-IDF vectorizer
+│   ├── scaler.pkl            # Feature scaler
+│   └── price_model.pkl       # Trained model
+│
+├── outputs/                   # Prediction outputs
+│   └── test_out.csv          # Final predictions
+│
+└── images/                    # Downloaded product images
+```
 
-*Source files*
+---
 
-1. **src/utils.py:** Contains helper functions for downloading images from the image_link. You may need to retry a few times to download all images due to possible throttling issues.
-2. **sample_code.py:** Sample dummy code that can generate an output file in the given format. Usage of this file is optional.
+## 🔧 Installation
 
-*Dataset files*
+### 1. Clone Repository
+```bash
+git clone https://github.com/yourusername/Amazon-ML-Challenge.git
+cd Amazon-ML-Challenge
+```
 
-1. **dataset/train.csv:** Training file with labels (`price`).
-2. **dataset/test.csv:** Test file without output labels (`price`). Generate predictions using your model/solution on this file's data and format the output file to match sample_test_out.csv
-3. **dataset/sample_test.csv:** Sample test input file.
-4. **dataset/sample_test_out.csv:** Sample outputs for sample_test.csv. The output for test.csv must be formatted in the exact same way. Note: The predictions in the file might not be correct
+### 2. Create Virtual Environment
+```bash
+python -m venv venv
 
-### Constraints:
+# Windows
+venv\Scripts\activate
 
-1. You will be provided with a sample output file. Format your output to match the sample output file exactly. 
+# Linux/Mac
+source venv/bin/activate
+```
 
-2. Predicted prices must be positive float values.
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-3. Final model should be a MIT/Apache 2.0 License model and up to 8 Billion parameters.
+---
 
-### Evaluation Criteria:
+## 🚀 Quick Start
 
-Submissions are evaluated using **Symmetric Mean Absolute Percentage Error (SMAPE)**: A statistical measure that expresses the relative difference between predicted and actual values as a percentage, while treating positive and negative errors equally.
+### Option 1: Using Main Script
 
-**Formula:**
+```bash
+# Quick training on sample data
+python main.py train --quick
+
+# Generate predictions on sample test
+python main.py predict --sample
+```
+
+### Option 2: Using Individual Scripts
+
+```bash
+# Train model
+python src/train.py --quick
+
+# Generate predictions
+python src/predict.py --sample
+```
+
+### Option 3: Using Jupyter Notebook
+
+Open `notebooks/complete_analysis.ipynb` for interactive analysis.
+
+---
+
+## 📖 Usage
+
+### Training
+
+```bash
+# Quick training (sample data)
+python main.py train --quick
+
+# Train specific model
+python main.py train --model rf          # Random Forest
+python main.py train --model xgb         # XGBoost
+python main.py train --model lgbm        # LightGBM
+python main.py train --model ensemble    # Ensemble (default)
+
+# Compare all models
+python main.py train --compare
+
+# Full training on train.csv
+python main.py train --train-path dataset/train.csv --model ensemble
+```
+
+### Prediction
+
+```bash
+# Predict on sample test
+python main.py predict --sample
+
+# Predict on full test set
+python main.py predict --test-path dataset/test.csv --output-path outputs/test_out.csv
+```
+
+---
+
+## 🏗️ Model Architecture
+
+### Pipeline Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        DATA PIPELINE                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   catalog_content ──► TextPreprocessor ──► Clean Text               │
+│         │                    │                                       │
+│         │                    ├──► Item Name                         │
+│         │                    ├──► Description                       │
+│         │                    ├──► Bullet Points                     │
+│         │                    ├──► Quantity (Value, Unit)            │
+│         │                    └──► Categorical Features              │
+│         │                                                            │
+│         ▼                                                            │
+│   ┌─────────────────────────────────────────────────────────────┐   │
+│   │                   FEATURE ENGINEERING                        │   │
+│   ├─────────────────────────────────────────────────────────────┤   │
+│   │  TF-IDF Vectorizer (5000 features, n-gram: 1-2)             │   │
+│   │  Numeric Features (quantity, pack_size, certifications)      │   │
+│   └─────────────────────────────────────────────────────────────┘   │
+│         │                                                            │
+│         ▼                                                            │
+│   ┌─────────────────────────────────────────────────────────────┐   │
+│   │                    ENSEMBLE MODEL                            │   │
+│   ├─────────────────────────────────────────────────────────────┤   │
+│   │  • Random Forest (200 trees, max_depth=20)                  │   │
+│   │  • XGBoost (300 trees, learning_rate=0.1)                   │   │
+│   │  • LightGBM (300 trees, num_leaves=31)                      │   │
+│   │  • Ridge Regression (baseline)                               │   │
+│   └─────────────────────────────────────────────────────────────┘   │
+│         │                                                            │
+│         ▼                                                            │
+│      Predicted Price ($)                                             │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Text Features Extracted
+
+| Feature | Description |
+|---------|-------------|
+| `item_name` | Product title |
+| `description` | Product description |
+| `quantity_value` | Numeric quantity |
+| `quantity_unit` | Unit of measure (oz, count, etc.) |
+| `pack_size` | Pack/case size |
+| `has_organic` | Organic certification |
+| `has_gluten_free` | Gluten-free certification |
+| `is_gift` | Gift product indicator |
+| `is_bulk` | Bulk purchase indicator |
+
+---
+
+## 📊 Evaluation
+
+### SMAPE (Symmetric Mean Absolute Percentage Error)
+
 ```
 SMAPE = (1/n) * Σ |predicted_price - actual_price| / ((|actual_price| + |predicted_price|)/2)
 ```
 
-**Example:** If actual price = $100 and predicted price = $120  
-SMAPE = |100-120| / ((|100| + |120|)/2) * 100% = 18.18%
+- Range: 0% (perfect) to 200% (worst)
+- Lower is better
 
-**Note:** SMAPE is bounded between 0% and 200%. Lower values indicate better performance.
+### Example
+```
+Actual = $100, Predicted = $120
+SMAPE = |100-120| / ((100+120)/2) × 100% = 18.18%
+```
 
-### Leaderboard Information:
+---
 
-- **Public Leaderboard:** During the challenge, rankings will be based on 25K samples from the test set to provide real-time feedback on your model's performance.
-- **Final Rankings:** The final decision will be based on performance on the complete 75K test set along with provided documentation of the proposed approach by the teams.
+## ⚠️ Important Rules
 
-### Submission Requirements:
+1. **No External Price Lookup** - Prices must NOT be scraped from the internet
+2. **Use Only Provided Data** - Train exclusively on provided 75K samples
+3. **Output Format** - Must match sample_test_out.csv exactly
+4. **All Predictions Required** - Every test sample must have a prediction
 
-1. Upload a `test_out.csv` file in the Portal with the exact same formatting as `sample_test_out.csv`
+---
 
-2. All participating teams must also provide a 1-page document describing:
-   - Methodology used
-   - Model architecture/algorithms selected
-   - Feature engineering techniques applied
-   - Any other relevant information about the approach
-   Note: A sample template for this documentation is provided in Documentation_template.md
+## 📝 Submission Checklist
 
-### **Academic Integrity and Fair Play:**
+- [ ] `test_out.csv` with all 75,000 predictions
+- [ ] Documentation (Documentation_template.md)
+- [ ] Code repository/drive link
 
-**⚠️ STRICTLY PROHIBITED: External Price Lookup**
+---
 
-Participants are **STRICTLY NOT ALLOWED** to obtain prices from the internet, external databases, or any sources outside the provided dataset. This includes but is not limited to:
-- Web scraping product prices from e-commerce websites
-- Using APIs to fetch current market prices
-- Manual price lookup from online sources
-- Using any external pricing databases or services
+## 🔑 Key Files
 
-**Enforcement:**
-- All submitted approaches, methodologies, and code pipelines will be thoroughly reviewed and verified
-- Any evidence of external price lookup or data augmentation from internet sources will result in **immediate disqualification**
+| File | Purpose |
+|------|---------|
+| `src/config.py` | All configuration parameters |
+| `src/data_preprocessing.py` | Text cleaning & feature extraction |
+| `src/feature_extraction.py` | TF-IDF & numeric features |
+| `src/model.py` | ML models with SMAPE evaluation |
+| `src/train.py` | Complete training pipeline |
+| `src/predict.py` | Prediction generation |
 
-**Fair Play:** This challenge is designed to test your machine learning and data science skills using only the provided training data. External price lookup defeats the purpose of the challenge.
+---
+
+**Good luck with the challenge! 🚀**
 
 
 ### Tips for Success:
