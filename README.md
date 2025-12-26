@@ -169,38 +169,38 @@ python main.py predict --test-path dataset/test.csv --output-path outputs/test_o
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        DATA PIPELINE                                 │
+│                        DATA PIPELINE                                │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                     │
 │   catalog_content ──► TextPreprocessor ──► Clean Text               │
-│         │                    │                                       │
+│         │                    │                                      │
 │         │                    ├──► Item Name                         │
 │         │                    ├──► Description                       │
 │         │                    ├──► Bullet Points                     │
 │         │                    ├──► Quantity (Value, Unit)            │
 │         │                    └──► Categorical Features              │
-│         │                                                            │
-│         ▼                                                            │
+│         │                                                           │
+│         ▼                                                           │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                   FEATURE ENGINEERING                        │   │
+│   │                   FEATURE ENGINEERING                       │   │
 │   ├─────────────────────────────────────────────────────────────┤   │
 │   │  TF-IDF Vectorizer (5000 features, n-gram: 1-2)             │   │
-│   │  Numeric Features (quantity, pack_size, certifications)      │   │
+│   │  Numeric Features (quantity, pack_size, certifications)     │   │
 │   └─────────────────────────────────────────────────────────────┘   │
-│         │                                                            │
-│         ▼                                                            │
+│         │                                                           │
+│         ▼                                                           │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                    ENSEMBLE MODEL                            │   │
+│   │                    ENSEMBLE MODEL                           │   │
 │   ├─────────────────────────────────────────────────────────────┤   │
 │   │  • Random Forest (200 trees, max_depth=20)                  │   │
 │   │  • XGBoost (300 trees, learning_rate=0.1)                   │   │
 │   │  • LightGBM (300 trees, num_leaves=31)                      │   │
-│   │  • Ridge Regression (baseline)                               │   │
+│   │  • Ridge Regression (baseline)                              │   |
 │   └─────────────────────────────────────────────────────────────┘   │
-│         │                                                            │
-│         ▼                                                            │
-│      Predicted Price ($)                                             │
-│                                                                      │
+│         │                                                           │
+│         ▼                                                           │
+│      Predicted Price ($)                                            │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
